@@ -6,5 +6,11 @@ contextBridge.exposeInMainWorld('api', {
 
   ejecutarRobocopy: (cmd) => ipcRenderer.send('ejecutar-robocopy', cmd),
   onOutput: (callback) => ipcRenderer.on('robocopy-output', (_, data) => callback(data)),
-  onFin: (callback) => ipcRenderer.on('robocopy-fin', (_, code) => callback(code))
+  onFin: (callback) => ipcRenderer.on('robocopy-fin', (_, code) => callback(code)),
+
+  // 👇 IMPORTANTE: coma antes de esto
+  removeListeners: () => {
+    ipcRenderer.removeAllListeners('robocopy-output');
+    ipcRenderer.removeAllListeners('robocopy-fin');
+  }
 });

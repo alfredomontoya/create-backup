@@ -11,6 +11,7 @@ window.onload = async () => {
   document.getElementById('btnGenerar').addEventListener('click', generarComandos);
   document.getElementById('btnCopiar').addEventListener('click', copiarPortapapeles);
   document.getElementById('btnEjecutar').addEventListener('click', ejecutarBackup);
+  document.getElementById('btnLimpiar').addEventListener('click', limpiarTodo);
 
   const input = document.getElementById('nombreDestino');
   const errorDiv = document.getElementById('errorNombre');
@@ -26,6 +27,7 @@ window.onload = async () => {
     });
   });
 };
+
 
 // 📂 usuarios
 async function cargarDirectorios() {
@@ -49,6 +51,7 @@ async function cargarDirectorios() {
     contenedor.appendChild(label);
   });
 }
+
 
 // 💾 discos
 async function cargarDiscos() {
@@ -74,6 +77,7 @@ async function cargarDiscos() {
   });
 }
 
+
 // 💽 backup
 async function cargarDiscosBackup() {
   const discos = await window.api.listarDiscos();
@@ -97,6 +101,7 @@ async function cargarDiscosBackup() {
   });
 }
 
+
 // 📂 carpetas seleccionadas
 function obtenerCarpetasSeleccionadas() {
   carpetasSeleccionadas = [];
@@ -105,7 +110,8 @@ function obtenerCarpetasSeleccionadas() {
   });
 }
 
-// 🚀 generar
+
+// 🚀 generar comandos
 function generarComandos() {
   const nombreInput = document.getElementById('nombreDestino');
   const errorNombre = document.getElementById('errorNombre');
@@ -115,7 +121,6 @@ function generarComandos() {
 
   let valido = true;
 
-  // reset
   nombreInput.classList.remove('input-error');
   errorNombre.style.display = 'none';
   errorDisco.style.display = 'none';
@@ -123,26 +128,22 @@ function generarComandos() {
 
   const nombre = nombreInput.value.trim();
 
-  // validar nombre
   if (!nombre) {
     nombreInput.classList.add('input-error');
     errorNombre.style.display = 'block';
     valido = false;
   }
 
-  // validar disco
   if (!discoSeleccionado) {
     errorDisco.style.display = 'block';
     valido = false;
   }
 
-  // validar usuarios
   if (seleccionados.length === 0) {
     textarea.value = "⚠️ Debes seleccionar al menos un usuario\n";
     return;
   }
 
-  // obtener carpetas seleccionadas
   obtenerCarpetasSeleccionadas();
 
   if (carpetasSeleccionadas.length === 0) {
@@ -158,7 +159,6 @@ function generarComandos() {
   const opciones = "/E /Z /R:3 /W:5 /V /FP /TEE";
 
   seleccionados.forEach(usuario => {
-
     comandos += `echo ==============================\n`;
     comandos += `echo Usuario: ${usuario}\n`;
     comandos += `echo ==============================\n\n`;
@@ -171,10 +171,8 @@ function generarComandos() {
       comandos += `echo Copiando ${carpeta}...\n`;
       comandos += `robocopy "${origen}" "${destino}" ${opciones} || echo ERROR en ${carpeta}\n`;
 
-      // backups adicionales
       discosBackupSeleccionados.forEach(disco => {
         const destinoBackup = `${disco}${nombre}\\Users\\${usuario}\\${carpeta}`;
-
         comandos += `robocopy "${origen}" "${destinoBackup}" ${opciones} || echo ERROR en backup ${carpeta}\n`;
       });
 
@@ -192,13 +190,17 @@ function generarComandos() {
   textarea.value = comandos;
 }
 
-// ▶ ejecutar
+
+// ▶ ejecutar backup
 function ejecutarBackup() {
   let comando = document.getElementById('comandos').value;
-
   if (!comando) return;
 
-  comando = comando.replace('@echo off', '').replace('pause', '');
+  // 🔥 limpiar listeners anteriores
+  window.api.removeListeners();
+
+  // ❗ solo eliminar pause
+  comando = comando.replace('pause', '');
 
   const logArea = document.getElementById('logOutput');
   const progressBar = document.getElementById('progressBar');
@@ -214,12 +216,9 @@ function ejecutarBackup() {
     logArea.value += data;
     logArea.scrollTop = logArea.scrollHeight;
 
-    // 🔍 detectar porcentaje (robocopy imprime %)
     const match = data.match(/(\d+)%/);
-
     if (match) {
       const porcentaje = parseInt(match[1]);
-
       progressBar.style.width = porcentaje + "%";
       progressText.innerText = porcentaje + "%";
     }
@@ -237,9 +236,23 @@ function ejecutarBackup() {
   });
 }
 
+
 // 📋 copiar
 function copiarPortapapeles() {
   const texto = document.getElementById('comandos').value;
   if (!texto) return;
   navigator.clipboard.writeText(texto);
+}
+
+
+// 🧼 limpiar todo
+function limpiarTodo() {
+  document.getElementById('comandos').value = "";
+  document.getElementById('logOutput').value = "";
+
+  const progressBar = document.getElementById('progressBar');
+  const progressText = document.getElementById('progressText');
+
+  progressBar.style.width = "0%";
+  progressText.innerText = "0%";
 }

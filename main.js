@@ -2,6 +2,7 @@ const { app, BrowserWindow, ipcMain } = require('electron');
 const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
+const os = require('os');
 
 function createWindow() {
   const win = new BrowserWindow({
@@ -17,18 +18,30 @@ function createWindow() {
 
 app.whenReady().then(createWindow);
 
+
 // 📂 Listar usuarios
 ipcMain.handle('listar-directorios', async () => {
   const basePath = 'C:\\Users';
   const ignorar = ['All Users', 'Default', 'Default User', 'Public'];
 
-  const items = fs.readdirSync(basePath);
+  try {
+    const items = fs.readdirSync(basePath);
 
-  return items.filter(item => {
-    const fullPath = path.join(basePath, item);
-    return fs.statSync(fullPath).isDirectory() && !ignorar.includes(item);
-  });
+    return items.filter(item => {
+      const fullPath = path.join(basePath, item);
+
+      try {
+        return fs.statSync(fullPath).isDirectory() && !ignorar.includes(item);
+      } catch {
+        return false;
+      }
+    });
+
+  } catch (err) {
+    return [];
+  }
 });
+
 
 // 💾 Listar discos
 ipcMain.handle('listar-discos', async () => {
@@ -45,19 +58,47 @@ ipcMain.handle('listar-discos', async () => {
   return discos;
 });
 
-// 🚀 Ejecutar robocopy
+
+// 🚀 Ejecutar robocopy usando .bat
 ipcMain.on('ejecutar-robocopy', (event, comando) => {
-  const proceso = spawn('cmd.exe', ['/c', comando]);
 
-  proceso.stdout.on('data', (data) => {
-    event.sender.send('robocopy-output', data.toString());
-  });
+  // 🔒 Seguridad básica
+  if (!comando.includes('robocopy')) {
+    event.sender.send('robocopy-output', '❌ Comando no permitido\n');
+    return;
+  }
 
-  proceso.stderr.on('data', (data) => {
-    event.sender.send('robocopy-output', data.toString());
-  });
+  try {
+    // 📄 Crear archivo .bat temporal
+    const tempPath = path.join(os.tmpdir(), 'backup_script.bat');
 
-  proceso.on('close', (code) => {
-    event.sender.send('robocopy-fin', code);
-  });
+    fs.writeFileSync(tempPath, comando, 'utf-8');
+
+    // ▶ Ejecutar .bat
+    const proceso = spawn('cmd.exe', ['/c', tempPath]);
+
+    // 📤 salida normal
+    proceso.stdout.on('data', (data) => {
+      event.sender.send('robocopy-output', data.toString());
+    });
+
+    // ⚠️ errores
+    proceso.stderr.on('data', (data) => {
+      event.sender.send('robocopy-output', data.toString());
+    });
+
+    // ❌ error del proceso
+    proceso.on('error', (err) => {
+      event.sender.send('robocopy-output', 'ERROR: ' + err.message + '\n');
+    });
+
+    // ✅ finalización
+    proceso.on('close', (code) => {
+      event.sender.send('robocopy-fin', code);
+    });
+
+  } catch (err) {
+    event.sender.send('robocopy-output', 'ERROR GENERAL: ' + err.message + '\n');
+  }
+
 });
