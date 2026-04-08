@@ -19,10 +19,16 @@
       <div id="lista" class="card"></div>
     </div>
 
-    <div>
-      <h3>Disco destino</h3>
-      <div id="discos" class="card"></div>
-      <div id="errorDisco" class="error">⚠️ Debes seleccionar un disco</div>
+    <div style="display: none;">
+      <h3>Carpetas a copiar</h3>
+      <div id="carpetas" class="card">
+        <label><input type="checkbox" value="Desktop" checked> Desktop</label>
+        <label><input type="checkbox" value="Downloads" checked> Downloads</label>
+        <label><input type="checkbox" value="Documents" checked> Documents</label>
+        <label><input type="checkbox" value="Music" checked> Music</label>
+        <label><input type="checkbox" value="Videos" checked> Videos</label>
+      </div>
+      <div id="errorCarpetas" class="error">⚠️ Selecciona al menos una carpeta</div>
     </div>
 
     <div>
@@ -31,25 +37,21 @@
     </div>
 
     <div>
+      <h3>Disco destino</h3>
+      <div id="discos" class="card"></div>
+      <div id="errorDisco" class="error">⚠️ Debes seleccionar un disco</div>
+    </div>
+
+    <div>
       <h3>Configuración</h3>
       <div class="card">
         <label>Nombre del respaldo</label>
-        <input type="text" id="nombreDestino" placeholder="Ej: Backup_2026">
+        <input type="text" id="nombreDestino" placeholder="Ej: Backup_2026" value="BACKUP-2026\PC-01">
         <div id="errorNombre" class="error">⚠️ Debes escribir un nombre</div>
       </div>
     </div>
 
-    <div>
-      <h3>Carpetas a copiar</h3>
-      <div id="carpetas" class="card">
-        <label><input type="checkbox" value="Desktop" checked> Desktop</label>
-        <label><input type="checkbox" value="Downloads" checked> Downloads</label>
-        <label><input type="checkbox" value="Documents" checked> Documents</label>
-        <label><input type="checkbox" value="Music"> Music</label>
-        <label><input type="checkbox" value="Videos"> Videos</label>
-      </div>
-      <div id="errorCarpetas" class="error">⚠️ Selecciona al menos una carpeta</div>
-    </div>
+    
 
   </div>
 
