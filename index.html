@@ -14,41 +14,46 @@
 
   <div class="container">
 
+    <!-- USUARIOS PARA BACKUP -->
     <div>
       <h3>Usuarios</h3>
       <div id="lista" class="card"></div>
     </div>
 
-    <div>
-      <h3>Disco destino</h3>
-      <div id="discos" class="card"></div>
-      <div id="errorDisco" class="error">⚠️ Debes seleccionar un disco</div>
-    </div>
-
-    <div>
-      <h3>Discos completos</h3>
-      <div id="discosBackup" class="card"></div>
-    </div>
-
-    <div>
-      <h3>Configuración</h3>
-      <div class="card">
-        <label>Nombre del respaldo</label>
-        <input type="text" id="nombreDestino" placeholder="Ej: Backup_2026">
-        <div id="errorNombre" class="error">⚠️ Debes escribir un nombre</div>
-      </div>
-    </div>
-
+    <!-- CARPETAS DE USUARIO A COPIAR -->
     <div>
       <h3>Carpetas a copiar</h3>
       <div id="carpetas" class="card">
         <label><input type="checkbox" value="Desktop" checked> Desktop</label>
         <label><input type="checkbox" value="Downloads" checked> Downloads</label>
         <label><input type="checkbox" value="Documents" checked> Documents</label>
-        <label><input type="checkbox" value="Music"> Music</label>
-        <label><input type="checkbox" value="Videos"> Videos</label>
+        <label><input type="checkbox" value="Music" checked> Music</label>
+        <label><input type="checkbox" value="Videos" checked> Videos</label>
       </div>
       <div id="errorCarpetas" class="error">⚠️ Selecciona al menos una carpeta</div>
+    </div>
+
+    <!-- BACKUP DE DISCOS -->
+    <div>
+      <h3>Discos completos</h3>
+      <div id="discosBackup" class="card"></div>
+    </div>
+
+    <!-- DISCO DESTINO PARA BACKUP -->
+    <div>
+      <h3>Disco destino</h3>
+      <div id="discos" class="card"></div>
+      <div id="errorDisco" class="error">⚠️ Debes seleccionar un disco</div>
+    </div>
+
+    <!-- NOMBRE DE LA CARPETA PARA BACKUP -->
+    <div>
+      <h3>Configuración</h3>
+      <div class="card">
+        <label>Nombre del respaldo</label>
+        <input type="text" id="nombreDestino" placeholder="Ej: Backup_2026" value="BACKUP-2026/PC-01">
+        <div id="errorNombre" class="error">⚠️ Debes escribir un nombre</div>
+      </div>
     </div>
 
   </div>
@@ -57,6 +62,7 @@
     <button id="btnGenerar">Generar</button>
     <button id="btnCopiar">Copiar</button>
     <button id="btnEjecutar">Ejecutar</button>
+    <button id="btnLimpiar">Limpiar</button>
   </div>
 
   <textarea id="comandos" placeholder="Aquí se verá el proceso..."></textarea>

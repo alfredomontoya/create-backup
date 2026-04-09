@@ -1,8 +1,15 @@
+// ===============================
+// 📦 VARIABLES GLOBALES
+// ===============================
 let seleccionados = [];
 let discoSeleccionado = "";
 let discosBackupSeleccionados = [];
 let carpetasSeleccionadas = [];
 
+
+// ===============================
+// 🚀 INICIALIZACIÓN
+// ===============================
 window.onload = async () => {
   await cargarDirectorios();
   await cargarDiscos();
@@ -29,7 +36,9 @@ window.onload = async () => {
 };
 
 
-// 📂 usuarios
+// ===============================
+// 📂 CARGAR USUARIOS
+// ===============================
 async function cargarDirectorios() {
   const dirs = await window.api.listarDirectorios();
   const contenedor = document.getElementById('lista');
@@ -38,10 +47,14 @@ async function cargarDirectorios() {
   dirs.forEach(dir => {
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
+    checkbox.value = dir;
 
     checkbox.addEventListener('change', () => {
-      if (checkbox.checked) seleccionados.push(dir);
-      else seleccionados = seleccionados.filter(d => d !== dir);
+      if (checkbox.checked) {
+        if (!seleccionados.includes(dir)) seleccionados.push(dir);
+      } else {
+        seleccionados = seleccionados.filter(d => d !== dir);
+      }
     });
 
     const label = document.createElement('label');
@@ -53,7 +66,9 @@ async function cargarDirectorios() {
 }
 
 
-// 💾 discos
+// ===============================
+// 💾 DISCO PRINCIPAL
+// ===============================
 async function cargarDiscos() {
   const discos = await window.api.listarDiscos();
   const contenedor = document.getElementById('discos');
@@ -63,6 +78,7 @@ async function cargarDiscos() {
     const radio = document.createElement('input');
     radio.type = 'radio';
     radio.name = 'disco';
+    radio.value = disco;
 
     radio.addEventListener('change', () => {
       discoSeleccionado = disco;
@@ -78,7 +94,9 @@ async function cargarDiscos() {
 }
 
 
-// 💽 backup
+// ===============================
+// 💽 DISCOS BACKUP
+// ===============================
 async function cargarDiscosBackup() {
   const discos = await window.api.listarDiscos();
   const contenedor = document.getElementById('discosBackup');
@@ -87,10 +105,17 @@ async function cargarDiscosBackup() {
   discos.forEach(disco => {
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
+    checkbox.value = disco;
 
     checkbox.addEventListener('change', () => {
-      if (checkbox.checked) discosBackupSeleccionados.push(disco);
-      else discosBackupSeleccionados = discosBackupSeleccionados.filter(d => d !== disco);
+      if (checkbox.checked) {
+        if (!discosBackupSeleccionados.includes(disco)) {
+          discosBackupSeleccionados.push(disco);
+        }
+      } else {
+        discosBackupSeleccionados =
+          discosBackupSeleccionados.filter(d => d !== disco);
+      }
     });
 
     const label = document.createElement('label');
@@ -102,157 +127,160 @@ async function cargarDiscosBackup() {
 }
 
 
-// 📂 carpetas seleccionadas
+// ===============================
+// 📂 CARPETAS SELECCIONADAS
+// ===============================
 function obtenerCarpetasSeleccionadas() {
   carpetasSeleccionadas = [];
+
   document.querySelectorAll('#carpetas input').forEach(chk => {
-    if (chk.checked) carpetasSeleccionadas.push(chk.value);
+    if (chk.checked) {
+      carpetasSeleccionadas.push(chk.value);
+    }
   });
 }
 
 
-// 🚀 generar comandos
+// ===============================
+// 🧠 GENERAR COMANDOS
+// ===============================
 function generarComandos() {
-  const nombreInput = document.getElementById('nombreDestino');
-  const errorNombre = document.getElementById('errorNombre');
-  const errorDisco = document.getElementById('errorDisco');
-  const errorCarpetas = document.getElementById('errorCarpetas');
+
+  const nombre = document.getElementById('nombreDestino').value.trim();
   const textarea = document.getElementById('comandos');
 
-  let valido = true;
-
-  nombreInput.classList.remove('input-error');
-  errorNombre.style.display = 'none';
-  errorDisco.style.display = 'none';
-  errorCarpetas.style.display = 'none';
-
-  const nombre = nombreInput.value.trim();
-
   if (!nombre) {
-    nombreInput.classList.add('input-error');
-    errorNombre.style.display = 'block';
-    valido = false;
-  }
-
-  if (!discoSeleccionado) {
-    errorDisco.style.display = 'block';
-    valido = false;
-  }
-
-  if (seleccionados.length === 0) {
-    textarea.value = "⚠️ Debes seleccionar al menos un usuario\n";
+    textarea.value = "⚠️ Debes ingresar un nombre de destino";
     return;
   }
 
-  obtenerCarpetasSeleccionadas();
-
-  if (carpetasSeleccionadas.length === 0) {
-    errorCarpetas.style.display = 'block';
-    valido = false;
+  if (!discoSeleccionado) {
+    textarea.value = "⚠️ Debes seleccionar un disco destino";
+    return;
   }
 
-  if (!valido) return;
-
   let comandos = "@echo off\n\n";
-  comandos += "echo Iniciando backup...\n\n";
+  comandos += "echo Iniciando proceso...\n\n";
 
-  const opciones = "/E /Z /R:3 /W:5 /V /FP /TEE";
+  // ===============================
+  // 🔹 OPCIONES ROBOCOPY
+  // ===============================
+  const opcionesUsuarios = "/E /Z /R:1 /W:1 /V /FP /TEE";
+  const opcionesDisco = "/E /Z /R:1 /W:1 /V /FP /TEE /XJ /MT:8";
 
-  seleccionados.forEach(usuario => {
-    comandos += `echo ==============================\n`;
-    comandos += `echo Usuario: ${usuario}\n`;
-    comandos += `echo ==============================\n\n`;
+  // ===============================
+  // 🔹 1) COPIA DE USUARIOS (SOLO AL DISCO DESTINO)
+  // ===============================
+  if (seleccionados.length > 0) {
 
-    carpetasSeleccionadas.forEach(carpeta => {
+    obtenerCarpetasSeleccionadas();
 
-      const origen = `C:\\Users\\${usuario}\\${carpeta}`;
-      const destino = `${discoSeleccionado}${nombre}\\Users\\${usuario}\\${carpeta}`;
+    if (carpetasSeleccionadas.length === 0) {
+      textarea.value = "⚠️ Debes seleccionar carpetas de usuario";
+      return;
+    }
 
-      comandos += `echo Copiando ${carpeta}...\n`;
-      comandos += `robocopy "${origen}" "${destino}" ${opciones} || echo ERROR en ${carpeta}\n`;
+    seleccionados.forEach(usuario => {
 
-      discosBackupSeleccionados.forEach(disco => {
-        const destinoBackup = `${disco}${nombre}\\Users\\${usuario}\\${carpeta}`;
-        comandos += `robocopy "${origen}" "${destinoBackup}" ${opciones} || echo ERROR en backup ${carpeta}\n`;
+      comandos += `echo ==============================\n`;
+      comandos += `echo Usuario: ${usuario}\n`;
+      comandos += `echo ==============================\n\n`;
+
+      carpetasSeleccionadas.forEach(carpeta => {
+
+        const origen = `C:\\Users\\${usuario}\\${carpeta}`;
+        const destino = `${discoSeleccionado}${nombre}\\Users\\${usuario}\\${carpeta}`;
+
+        // ✅ SOLO UNA LINEA (sin duplicados)
+        comandos += `robocopy "${origen}" "${destino}" ${opcionesUsuarios}\n\n`;
       });
-
-      comandos += "\n";
     });
+  }
 
-    comandos += "\n";
-  });
+  // ===============================
+  // 🔹 2) CLONACIÓN DE DISCOS
+  // ===============================
+  if (discosBackupSeleccionados.length > 0) {
 
+    discosBackupSeleccionados.forEach(discoOrigen => {
+
+      const letra = discoOrigen.replace(":\\", "");
+      const origen = `${discoOrigen}`;
+      const destino = `${discoSeleccionado}${nombre}\\${letra}\\`;
+
+      // 🔥 EXCLUSIONES DEL SISTEMA
+      const excluir = `/XD `
+        + `"${discoOrigen}$Recycle.Bin" `
+        + `"${discoOrigen}System Volume Information" `
+        + `"${discoOrigen}Windows\\Temp" `
+        + `"${discoOrigen}Windows\\Logs" `
+        + `"${discoOrigen}Windows\\SoftwareDistribution" `
+        + `"${discoOrigen}ProgramData\\Microsoft\\Windows\\WER" `
+        + `"${discoOrigen}ProgramData\\Package Cache"`;
+
+      comandos += `echo ==============================\n`;
+      comandos += `echo Clonando disco ${discoOrigen}\n`;
+      comandos += `echo ==============================\n`;
+
+      comandos += `robocopy "${origen}" "${destino}" ${opcionesDisco} ${excluir}\n\n`;
+    });
+  }
+
+  // ===============================
+  // FINAL
+  // ===============================
   comandos += "echo ==============================\n";
-  comandos += "echo Backup finalizado\n";
+  comandos += "echo Proceso finalizado\n";
   comandos += "echo ==============================\n";
   comandos += "pause";
 
   textarea.value = comandos;
 }
-
-
-// ▶ ejecutar backup
+// ===============================
+// ▶ EJECUTAR BACKUP
+// ===============================
 function ejecutarBackup() {
   let comando = document.getElementById('comandos').value;
   if (!comando) return;
 
-  // 🔥 limpiar listeners anteriores
   window.api.removeListeners();
-
-  // ❗ solo eliminar pause
   comando = comando.replace('pause', '');
 
   const logArea = document.getElementById('logOutput');
-  const progressBar = document.getElementById('progressBar');
-  const progressText = document.getElementById('progressText');
-
   logArea.value = "";
-  progressBar.style.width = "0%";
-  progressText.innerText = "0%";
 
   window.api.ejecutarRobocopy(comando);
 
   window.api.onOutput((data) => {
     logArea.value += data;
-    logArea.scrollTop = logArea.scrollHeight;
-
-    const match = data.match(/(\d+)%/);
-    if (match) {
-      const porcentaje = parseInt(match[1]);
-      progressBar.style.width = porcentaje + "%";
-      progressText.innerText = porcentaje + "%";
-    }
   });
 
   window.api.onFin((code) => {
-    logArea.value += `\n\nFinalizado (code: ${code})`;
-
-    if (code <= 7) {
-      progressBar.style.width = "100%";
-      progressText.innerText = "100% ✅";
-    } else {
-      progressText.innerText = "Error ❌";
-    }
+    logArea.value += `\nFinalizado (code: ${code})`;
   });
 }
 
 
-// 📋 copiar
+// ===============================
+// 📋 COPIAR
+// ===============================
 function copiarPortapapeles() {
   const texto = document.getElementById('comandos').value;
   if (!texto) return;
+
   navigator.clipboard.writeText(texto);
 }
 
 
-// 🧼 limpiar todo
+// ===============================
+// 🧼 LIMPIAR
+// ===============================
 function limpiarTodo() {
   document.getElementById('comandos').value = "";
   document.getElementById('logOutput').value = "";
 
-  const progressBar = document.getElementById('progressBar');
-  const progressText = document.getElementById('progressText');
-
-  progressBar.style.width = "0%";
-  progressText.innerText = "0%";
+  console.log("Limpiando selecciones...");
+//   seleccionados = [];
+//   discosBackupSeleccionados = [];
+//   carpetasSeleccionadas = [];
 }
