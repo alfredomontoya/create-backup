@@ -102,3 +102,42 @@ ipcMain.on('ejecutar-robocopy', (event, comando) => {
   }
 
 });
+
+// ===============================
+// 📁 VERIFICAR SI CARPETA EXISTE
+// ===============================
+ipcMain.handle('verificar-carpeta', async (event, ruta) => {
+  try {
+    return fs.existsSync(ruta);
+  } catch (error) {
+    console.error('Error al verificar carpeta:', error);
+    return false;
+  }
+});
+
+// ===============================
+// 📂 LISTAR SUBCARPETAS
+// ===============================
+ipcMain.handle('listar-subcarpetas', async (event, ruta) => {
+  try {
+    if (!fs.existsSync(ruta)) {
+      return [];
+    }
+    
+    const items = fs.readdirSync(ruta);
+    const subcarpetas = [];
+    
+    for (const item of items) {
+      const rutaCompleta = path.join(ruta, item);
+      const stats = fs.statSync(rutaCompleta);
+      if (stats.isDirectory()) {
+        subcarpetas.push(item);
+      }
+    }
+    
+    return subcarpetas;
+  } catch (error) {
+    console.error('Error al listar subcarpetas:', error);
+    return [];
+  }
+});

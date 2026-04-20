@@ -14,6 +14,7 @@
 
   <div class="container">
 
+    <!-- USUARIOS PARA BACKUP -->
     <div>
       <h3>Usuarios</h3>
       <div id="lista" class="card"></div>
@@ -32,26 +33,25 @@
     </div>
 
     <div>
-      <h3>Discos completos</h3>
-      <div id="discosBackup" class="card"></div>
-    </div>
+        <h3>Discos completos</h3>
+        <div id="discosBackup" class="card"></div>
+      </div>
 
-    <div>
-      <h3>Disco destino</h3>
-      <div id="discos" class="card"></div>
-      <div id="errorDisco" class="error">⚠️ Debes seleccionar un disco</div>
-    </div>
+      <div>
+        <h3>Disco destino</h3>
+        <div id="discos" class="card"></div>
+        <div id="errorDisco" class="error">⚠️ Debes seleccionar un disco</div>
+      </div>
 
     <div>
       <h3>Configuración</h3>
       <div class="card">
         <label>Nombre del respaldo</label>
+        <div id="carpetasExistentesContainer">dfdf</div>
         <input type="text" id="nombreDestino" placeholder="Ej: Backup_2026" value="BACKUP-2026\PC-01">
         <div id="errorNombre" class="error">⚠️ Debes escribir un nombre</div>
       </div>
     </div>
-
-    
 
   </div>
 
@@ -59,17 +59,19 @@
     <button id="btnGenerar">Generar</button>
     <button id="btnCopiar">Copiar</button>
     <button id="btnEjecutar">Ejecutar</button>
+    <button id="btnLimpiar">Limpiar</button>
   </div>
 
   <textarea id="comandos" placeholder="Aquí se verá el proceso..."></textarea>
 
-  <h3>Progreso</h3>
-  <div class="card">
-    <div id="progressText">0%</div>
-    <div class="progress-bar">
-      <div id="progressBar"></div>
-    </div>
+<!-- Reemplaza esta sección en tu HTML -->
+<div class="progress-container">
+  <h3>📊 Progreso del Backup</h3>
+  <div id="progressText">0%</div>
+  <div class="progress-bar">
+    <div id="progressBar"></div>
   </div>
+</div>
 
   <h3>Log</h3>
   <textarea id="logOutput" placeholder="Aquí se verá el log..."></textarea>

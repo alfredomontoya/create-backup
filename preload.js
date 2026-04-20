@@ -7,6 +7,8 @@ contextBridge.exposeInMainWorld('api', {
   ejecutarRobocopy: (cmd) => ipcRenderer.send('ejecutar-robocopy', cmd),
   onOutput: (callback) => ipcRenderer.on('robocopy-output', (_, data) => callback(data)),
   onFin: (callback) => ipcRenderer.on('robocopy-fin', (_, code) => callback(code)),
+  verificarCarpeta: (ruta) => ipcRenderer.invoke('verificar-carpeta', ruta),
+  listarSubcarpetas: (ruta) => ipcRenderer.invoke('listar-subcarpetas', ruta),
 
   // 👇 IMPORTANTE: coma antes de esto
   removeListeners: () => {
