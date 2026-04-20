@@ -21,7 +21,7 @@
   },
   "build": {
     "appId": "com.backup.app",
-    "productName": "Backup Generator",
+    "productName": "Backup Generators",
     "win": {
       "target": "nsis"
     }
