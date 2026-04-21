@@ -1,357 +1,111 @@
-/* 🔥 RESET */
-* {
-  box-sizing: border-box;
-}
+/* ============================================
+   LISTA Y CHECKBOXES/RADIO BUTTONS MEJORADOS
+   ============================================ */
 
-/* 🔥 BODY */
 body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #020617, #0f172a);
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #1e293b;
   color: #e2e8f0;
-  margin: 0;
-  padding: 20px;
+padding: 20px;  
 }
-
-/* 🔥 GRID */
-.container {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr 3fr;
-  gap: 20px;
-}
-
-/* 🔥 CARDS */
-.card {
-  background: rgba(30, 41, 59, 0.8);
-  padding: 15px;
-  border-radius: 14px;
-  max-height: 180px;
-  overflow-y: auto;
-
-  backdrop-filter: blur(6px);
-  transition: all 0.25s ease;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.4);
-
-  /* 🔥 animación entrada */
-  animation: fadeIn 0.4s ease;
-}
-
-.card:hover {
-  transform: translateY(-4px) scale(1.01);
-  box-shadow: 0 10px 25px rgba(0,0,0,0.6);
-}
-
-/* 🔥 TITULOS */
-h3 {
-  margin-top: 0;
-  color: #22c55e;
-  animation: slideInLeft 0.5s ease;
-  font-size: 16px;
-}
-
-/* 🔥 LABEL */
+/* Labels para items de lista */
 label {
   display: flex;
   align-items: center;
-  gap: 8px;
-  margin-bottom: 6px;
+  gap: 10px;
+  padding: 8px 12px;
+  margin-bottom: 4px;
   cursor: pointer;
-  transition: 0.2s;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  user-select: none;
+  font-size: 14px;
+  color: #e2e8f0;
 }
 
 label:hover {
-  color: #38bdf8;
-  transform: translateX(5px);
+  background-color: rgba(34, 197, 94, 0.1);
+  color: #4ade80;
+  transform: translateX(2px);
 }
 
-/* 🔥 CHECKBOX / RADIO */
+label:active {
+  transform: translateX(0);
+}
+
+/* Checkboxes y Radio Buttons */
 input[type="checkbox"],
 input[type="radio"] {
-  accent-color: #22c55e;
-  transform: scale(1.2);
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  min-height: 18px;
   cursor: pointer;
-  transition: transform 0.2s ease;
+  accent-color: #10b981;
+  transition: all 0.2s ease;
+  position: relative;
 }
 
 input[type="checkbox"]:hover,
 input[type="radio"]:hover {
-  transform: scale(1.3);
+  transform: scale(1.15);
+  filter: brightness(1.2);
 }
 
-/* 🔥 INPUT */
-input[type="text"] {
-  width: 100%;
-  padding: 10px;
-  border-radius: 10px;
-  border: none;
-  outline: none;
-  background: #020617;
-  color: white;
-  margin-top: 5px;
-
-  transition: all 0.25s ease;
+input[type="checkbox"]:checked,
+input[type="radio"]:checked {
+  box-shadow: 0 0 8px rgba(16, 185, 129, 0.6);
 }
 
-input[type="text"]:focus {
-  box-shadow: 0 0 0 2px #22c55e, 0 0 10px #22c55e;
-  transform: scale(1.02);
+input[type="checkbox"]:focus,
+input[type="radio"]:focus {
+  outline: 2px solid #10b981;
+  outline-offset: 2px;
 }
 
-/* 🔥 BOTONES */
-.actions {
-  margin-top: 20px;
-  display: flex;
-  gap: 10px;
+/* Estilos para títulos de secciones */
+h3 {
+  margin: 0 0 1rem 0;
+  font-size: 1.25rem;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  color: #ffffff;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
 }
 
-button {
-  flex: 1;
-  padding: 10px;
-  border: none;
-  border-radius: 12px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: all 0.2s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-/* Efecto ripple para botones */
-button::after {
-  content: '';
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  width: 0;
-  height: 0;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.3);
-  transform: translate(-50%, -50%);
-  transition: width 0.6s, height 0.6s;
-}
-
-button:active::after {
-  width: 300px;
-  height: 300px;
-}
-
-#btnGenerar {
-  background: linear-gradient(135deg, #22c55e, #16a34a);
-  color: white;
-}
-
-#btnGenerar:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px #22c55e;
-}
-
-#btnCopiar {
-  background: linear-gradient(135deg, #3b82f6, #2563eb);
-  color: white;
-}
-
-#btnCopiar:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px #3b82f6;
-}
-
-#btnEjecutar {
-  background: linear-gradient(135deg, #f59e0b, #d97706);
-  color: white;
-}
-
-#btnEjecutar:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px #f59e0b;
-}
-
-#btnLimpiar {
-  background: linear-gradient(135deg, #ef4444, #dc2626);
-  color: white;
-}
-
-#btnLimpiar:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 12px #ef4444;
-}
-
-button:active {
-  transform: scale(0.95);
-}
-
-/* 🔥 TEXTAREA */
-textarea {
-  width: 100%;
-  margin-top: 20px;
-  padding: 12px;
-  border-radius: 12px;
-  border: none;
-  background: #000;
-  color: #22c55e;
-  font-family: monospace;
-  height: 250px;
-  resize: none;
-  overflow-y: auto;
-
-  box-shadow: inset 0 0 10px #000;
-  transition: all 0.3s ease;
-}
-
-textarea:focus {
-  outline: none;
-  box-shadow: inset 0 0 10px #000, 0 0 10px #22c55e;
-}
-
-/* 🔥 SCROLL */
-.card::-webkit-scrollbar,
-textarea::-webkit-scrollbar {
+/* Custom Scrollbar */
+.custom-scrollbar::-webkit-scrollbar {
   width: 6px;
 }
 
-.card::-webkit-scrollbar-track,
-textarea::-webkit-scrollbar-track {
-  background: #1e293b;
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: rgba(51, 65, 85, 0.5);
   border-radius: 10px;
 }
 
-.card::-webkit-scrollbar-thumb,
-textarea::-webkit-scrollbar-thumb {
-  background: #38bdf8;
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(34, 197, 94, 0.6);
   border-radius: 10px;
   transition: background 0.3s ease;
 }
 
-.card::-webkit-scrollbar-thumb:hover,
-textarea::-webkit-scrollbar-thumb:hover {
-  background: #22c55e;
+.custom-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: rgba(34, 197, 94, 0.9);
 }
 
-/* 🔥 ERROR */
-.error {
-  color: #ef4444;
-  margin-top: 5px;
-  display: none;
-  font-size: 13px;
-  animation: shake 0.5s ease;
-}
-
-.input-error {
-  box-shadow: 0 0 0 2px #ef4444 !important;
-  animation: shake 0.5s ease;
-}
-
-/* 🔥 PROGRESS BAR MEJORADA */
-.progress-container {
-  margin-top: 20px;
-  background: rgba(30, 41, 59, 0.8);
-  border-radius: 14px;
-  padding: 15px;
-  backdrop-filter: blur(6px);
-  animation: fadeInUp 0.5s ease;
-}
-
-.progress-bar {
-  width: 100%;
-  height: 30px;
-  background: #1e293b;
-  border-radius: 15px;
-  overflow: hidden;
-  margin-top: 10px;
-  position: relative;
-  box-shadow: inset 0 1px 3px rgba(0,0,0,0.3);
-}
-
-#progressBar {
-  height: 100%;
-  width: 0%;
-  background: linear-gradient(90deg, #22c55e, #4ade80, #22c55e);
-  background-size: 200% 100%;
-  transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
-  position: relative;
-  overflow: hidden;
-  border-radius: 15px;
-  animation: gradientShift 2s ease infinite;
-}
-
-/* Efecto de brillo en la barra de progreso */
-#progressBar::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  bottom: 0;
-  right: 0;
-  background: linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.3) 50%,
-    rgba(255, 255, 255, 0) 100%
-  );
-  transform: translateX(-100%);
-  animation: shimmer 2s infinite;
-}
-
-#progressText {
-  font-weight: bold;
-  text-align: center;
-  margin-bottom: 8px;
-  color: #22c55e;
-  font-size: 14px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-/* 🔥 ANIMACIONES NUEVAS */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes slideInLeft {
-  from {
-    opacity: 0;
-    transform: translateX(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateX(0);
-  }
-}
-
+/* Error Shake Animation */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }
   10%, 30%, 50%, 70%, 90% { transform: translateX(-2px); }
   20%, 40%, 60%, 80% { transform: translateX(2px); }
 }
 
-@keyframes gradientShift {
-  0% { background-position: 0% 50%; }
-  50% { background-position: 100% 50%; }
-  100% { background-position: 0% 50%; }
+.input-error {
+  animation: shake 0.5s ease;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.5) !important;
 }
 
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-/* 🔥 EFECTO DE CARGA PARA BOTONES */
+/* Loading spinner for buttons */
 button.loading {
   position: relative;
   pointer-events: none;
@@ -363,7 +117,7 @@ button.loading::before {
   position: absolute;
   width: 20px;
   height: 20px;
-  border: 2px solid #fff;
+  border: 2px solid currentColor;
   border-top-color: transparent;
   border-radius: 50%;
   left: 50%;
@@ -376,108 +130,7 @@ button.loading::before {
   to { transform: translate(-50%, -50%) rotate(360deg); }
 }
 
-/* 🔥 RESPONSIVE */
-@media (max-width: 768px) {
-  .container {
-    grid-template-columns: 1fr;
-    gap: 15px;
-  }
-  
-  body {
-    padding: 10px;
-  }
-  
-  .actions {
-    flex-direction: column;
-  }
-  
-  button {
-    padding: 12px;
-  }
-  
-  .card {
-    max-height: 200px;
-  }
-}
-
-/* 🔥 TOOLTIP personalizado */
-[data-tooltip] {
-  position: relative;
-  cursor: pointer;
-}
-
-[data-tooltip]:before {
-  content: attr(data-tooltip);
-  position: absolute;
-  bottom: 100%;
-  left: 50%;
-  transform: translateX(-50%);
-  padding: 5px 10px;
-  background: #22c55e;
-  color: #020617;
-  border-radius: 5px;
-  font-size: 12px;
-  white-space: nowrap;
-  opacity: 0;
-  pointer-events: none;
-  transition: opacity 0.3s;
-  margin-bottom: 5px;
-}
-
-[data-tooltip]:hover:before {
-  opacity: 1;
-}
-
-/* 🔥 GLOW EFFECT para elementos importantes */
-.glow {
-  animation: glow 2s ease-in-out infinite;
-}
-
-@keyframes glow {
-  0%, 100% { box-shadow: 0 0 5px #22c55e; }
-  50% { box-shadow: 0 0 20px #22c55e; }
-}
-
-/* ===============================
-   ESTILOS PARA RESPALDOS EXISTENTES
-   =============================== */
-
-/* Contenedor principal */
-#carpetasExistentesContainer {
-  margin: 8px 0 5px 0;
-  font-size: 13px;
-}
-
-/* Mensaje cuando no hay respaldos */
-.respaldo-mensaje {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 12px;
-  background: rgba(100, 116, 139, 0.1);
-  border-radius: 8px;
-  color: #94a3b8;
-  font-size: 12px;
-}
-
-.respaldo-icono {
-  font-size: 14px;
-}
-
-/* Wrapper de las carpetas */
-.respaldo-wrapper {
-  margin-top: 5px;
-}
-
-/* Grid de carpetas */
-.respaldo-grid {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-}
-
-/* Badge individual de cada carpeta */
+/* Badge Styles */
 .respaldo-badge {
   display: inline-flex;
   align-items: center;
@@ -490,7 +143,6 @@ button.loading::before {
   font-weight: 500;
   color: #4ade80;
   transition: all 0.2s ease;
-  cursor: default;
 }
 
 .respaldo-badge:hover {
@@ -499,11 +151,6 @@ button.loading::before {
   border-color: rgba(34, 197, 94, 0.5);
 }
 
-.respaldo-badge-icono {
-  font-size: 11px;
-}
-
-/* Etiqueta descriptiva opcional */
 .respaldo-label {
   display: block;
   font-size: 11px;
@@ -512,14 +159,24 @@ button.loading::before {
   letter-spacing: 0.5px;
 }
 
-/* Variante compacta para cuando hay muchas carpetas */
-@media (max-width: 768px) {
-  .respaldo-badge {
-    padding: 3px 8px;
-    font-size: 10px;
-  }
-  
-  .respaldo-grid {
-    gap: 6px;
-  }
+.respaldo-wrapper {
+  margin-top: 5px;
+}
+
+.respaldo-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+
+.respaldo-mensaje {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(100, 116, 139, 0.1);
+  border-radius: 8px;
+  color: #94a3b8;
+  font-size: 12px;
 }

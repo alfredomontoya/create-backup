@@ -3,81 +3,133 @@
 <head>
   <meta charset="UTF-8">
   <title>Backup Generator</title>
-
   <meta http-equiv="Content-Security-Policy" 
         content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'">
-
+  <link rel="stylesheet" href="tailwind-compiled.css">
   <link rel="stylesheet" href="styles.css">
 </head>
 
-<body>
+<body class="bg-gradient-to-br from-slate-950 via-slate-900 to-slate-800 text-slate-100 min-h-screen">
+  <!-- Header -->
+  <div class="bg-slate-900/90 border-b border-slate-700 py-6 px-6 shadow-2xl">
+    <h1 class="text-4xl font-bold tracking-wider text-white mb-1">💾 Backup Generator</h1>
+    <p class="text-emerald-400 text-sm font-medium">Gestión profesional de copias de seguridad</p>
+  </div>
 
-  <div class="container">
+  <div class="max-w-7xl mx-auto p-6">
+    <!-- Main Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-6">
+      
+      <!-- Usuarios (Left Sidebar) -->
+      <div class="lg:col-span-3">
+        <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 border border-slate-700/50 shadow-xl hover:shadow-2xl transition-all duration-300">
+          <h3 class="text-white text-xl font-bold mb-4 flex items-center gap-2">
+            <span>👥</span> Usuarios
+          </h3>
+          <div id="lista" class="space-y-1 max-h-48 overflow-y-auto custom-scrollbar"></div>
+        </div>
+      </div>
 
-    <!-- USUARIOS PARA BACKUP -->
-    <div>
-      <h3>Usuarios</h3>
-      <div id="lista" class="card"></div>
+      <!-- Discos Backup (Middle) -->
+      <div class="lg:col-span-3">
+        <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 border border-slate-700/50 shadow-xl hover:shadow-2xl transition-all duration-300">
+          <h3 class="text-white text-xl font-bold mb-4 flex items-center gap-2">
+            <span>💿</span> Discos Completos
+          </h3>
+          <div id="discosBackup" class="space-y-1 max-h-48 overflow-y-auto custom-scrollbar"></div>
+        </div>
+      </div>
+
+      <!-- Disco Destino (Right) -->
+      <div class="lg:col-span-3">
+        <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 border border-slate-700/50 shadow-xl hover:shadow-2xl transition-all duration-300">
+          <h3 class="text-white text-xl font-bold mb-4 flex items-center gap-2">
+            <span>🎯</span> Disco Destino
+          </h3>
+          <div id="discos" class="space-y-1 max-h-48 overflow-y-auto custom-scrollbar"></div>
+          <div id="errorDisco" class="hidden text-red-400 text-sm mt-3 p-2 bg-red-950/20 rounded flex items-center gap-2">
+            <span>⚠️</span> Debes seleccionar un disco
+          </div>
+        </div>
+      </div>
+
+      <!-- Configuración (Full Width) -->
+      <div class="lg:col-span-3">
+        <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 border border-slate-700/50 shadow-xl hover:shadow-2xl transition-all duration-300">
+          <h3 class="text-white text-xl font-bold mb-4 flex items-center gap-2">
+            <span>⚙️</span> Configuración
+          </h3>
+          <label class="block text-sm text-slate-300 font-medium mb-2">Nombre del respaldo</label>
+          <input type="text" id="nombreDestino" placeholder="Ej: Backup_2026" value="BACKUP-2026\PC-01"
+            class="w-full px-4 py-2 bg-slate-900/80 border border-slate-600 rounded-lg text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 focus:border-transparent transition-all duration-200">
+          <div id="errorNombre" class="hidden text-red-400 text-sm mt-2 p-2 bg-red-950/20 rounded flex items-center gap-2">
+            <span>⚠️</span> Debes escribir un nombre
+          </div>
+          <div id="carpetasExistentesContainer" class="mt-4 text-sm text-slate-400"></div>
+        </div>
+      </div>
     </div>
 
-    <!-- <div style="display: none;">
-      <h3>Carpetas a copiar</h3>
-      <div id="carpetas" class="card">
-        <label><input type="checkbox" value="Desktop" checked> Desktop</label>
-        <label><input type="checkbox" value="Downloads" checked> Downloads</label>
-        <label><input type="checkbox" value="Documents" checked> Documents</label>
-        <label><input type="checkbox" value="Music" checked> Music</label>
-        <label><input type="checkbox" value="Videos" checked> Videos</label>
-        <label><input type="checkbox" value="Pictures" checked> Videos</label>
-      </div>
-      <div id="errorCarpetas" class="error">⚠️ Selecciona al menos una carpeta</div>
-    </div> -->
+    <!-- Botones de Acción -->
+    <div class="flex flex-col sm:flex-row gap-4 mb-6">
+      <button id="btnGenerar" 
+        class="flex-1 px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-white font-bold rounded-xl shadow-lg hover:shadow-emerald-500/50 hover:scale-105 transition-all duration-200 active:scale-95">
+        🔨 Generar
+      </button>
+      <button id="btnCopiar"
+        class="flex-1 px-6 py-3 bg-gradient-to-r from-blue-500 to-cyan-500 hover:from-blue-600 hover:to-cyan-600 text-white font-bold rounded-xl shadow-lg hover:shadow-blue-500/50 hover:scale-105 transition-all duration-200 active:scale-95">
+        📋 Copiar
+      </button>
+      <button id="btnEjecutar"
+        class="flex-1 px-6 py-3 bg-gradient-to-r from-orange-500 to-yellow-500 hover:from-orange-600 hover:to-yellow-600 text-white font-bold rounded-xl shadow-lg hover:shadow-orange-500/50 hover:scale-105 transition-all duration-200 active:scale-95">
+        ▶️ Ejecutar
+      </button>
+      <button id="btnLimpiar"
+        class="flex-1 px-6 py-3 bg-gradient-to-r from-red-500 to-rose-500 hover:from-red-600 hover:to-rose-600 text-white font-bold rounded-xl shadow-lg hover:shadow-red-500/50 hover:scale-105 transition-all duration-200 active:scale-95">
+        🗑️ Limpiar
+      </button>
+    </div>
 
-    <div>
-        <h3>Discos completos</h3>
-        <div id="discosBackup" class="card"></div>
+    <!-- Terminal Output -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+      <div class="bg-slate-900/80 border border-slate-700 rounded-xl overflow-hidden shadow-xl">
+        <div class="bg-slate-800 px-4 py-3 border-b border-slate-700">
+          <h3 class="text-sm font-bold text-emerald-400 flex items-center gap-2">
+            <span>$</span> Comandos
+          </h3>
+        </div>
+        <textarea id="comandos" placeholder="Aquí se verá el proceso..."
+          class="w-full h-48 px-4 py-3 bg-slate-900 text-emerald-400 font-mono text-sm resize-none focus:outline-none custom-scrollbar"></textarea>
       </div>
 
-      <div>
-        <h3>Disco destino</h3>
-        <div id="discos" class="card"></div>
-        <div id="errorDisco" class="error">⚠️ Debes seleccionar un disco</div>
-      </div>
-
-    <div>
-      <h3>Configuración</h3>
-      <div class="card">
-        <label>Nombre del respaldo</label>
-        <div id="carpetasExistentesContainer">dfdf</div>
-        <input type="text" id="nombreDestino" placeholder="Ej: Backup_2026" value="BACKUP-2026\PC-01">
-        <div id="errorNombre" class="error">⚠️ Debes escribir un nombre</div>
+      <div class="bg-slate-900/80 border border-slate-700 rounded-xl overflow-hidden shadow-xl">
+        <div class="bg-slate-800 px-4 py-3 border-b border-slate-700">
+          <h3 class="text-sm font-bold text-blue-400 flex items-center gap-2">
+            <span>📊</span> Log
+          </h3>
+        </div>
+        <textarea id="logOutput" placeholder="Aquí se verá el log..."
+          class="w-full h-48 px-4 py-3 bg-slate-900 text-cyan-400 font-mono text-sm resize-none focus:outline-none custom-scrollbar"></textarea>
       </div>
     </div>
 
+    <!-- Progress Bar -->
+    <div class="bg-slate-800/50 backdrop-blur-md rounded-2xl p-6 border border-slate-700/50 shadow-xl mb-6">
+      <h3 class="text-xl font-bold text-purple-400 mb-4 flex items-center gap-2">
+        <span>📊</span> Progreso del Backup
+      </h3>
+      <div class="mb-3">
+        <div id="progressText" class="text-center font-bold text-emerald-400 text-sm tracking-widest">0%</div>
+      </div>
+      <div class="w-full h-8 bg-slate-900 rounded-full overflow-hidden border border-slate-600 shadow-inner">
+        <div id="progressBar" class="h-full w-0 bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-500 transition-all duration-500 ease-out relative overflow-hidden"
+          style="background-size: 200% 100%;">
+          <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent animate-shimmer"></div>
+        </div>
+      </div>
+    </div>
   </div>
-
-  <div class="actions">
-    <button id="btnGenerar">Generar</button>
-    <button id="btnCopiar">Copiar</button>
-    <button id="btnEjecutar">Ejecutar</button>
-    <button id="btnLimpiar">Limpiar</button>
-  </div>
-
-  <textarea id="comandos" placeholder="Aquí se verá el proceso..."></textarea>
-
-<!-- Reemplaza esta sección en tu HTML -->
-<div class="progress-container">
-  <h3>📊 Progreso del Backup</h3>
-  <div id="progressText">0%</div>
-  <div class="progress-bar">
-    <div id="progressBar"></div>
-  </div>
-</div>
-
-  <h3>Log</h3>
-  <textarea id="logOutput" placeholder="Aquí se verá el log..."></textarea>
 
   <script src="renderer.js"></script>
-
 </body>
 </html>

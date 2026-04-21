@@ -17,7 +17,10 @@
   },
   "devDependencies": {
     "electron": "^41.1.0",
-    "electron-builder": "^26.8.1"
+    "electron-builder": "^26.8.1",
+    "tailwindcss": "^3.4.1",
+    "postcss": "^8.4.31",
+    "autoprefixer": "^10.4.16"
   },
   "build": {
     "appId": "com.backup.app",
