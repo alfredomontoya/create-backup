@@ -167,13 +167,17 @@ async function cargarDiscosBackup() {
 // 📂 CARPETAS SELECCIONADAS
 // ===============================
 function obtenerCarpetasSeleccionadas() {
-  carpetasSeleccionadas = [];
+  // carpetasSeleccionadas = [];
 
-  document.querySelectorAll('#carpetas input').forEach(chk => {
-    if (chk.checked) {
-      carpetasSeleccionadas.push(chk.value);
-    }
-  });
+  // document.querySelectorAll('#carpetas input').forEach(chk => {
+  //   console.log(chk)
+  //   if (chk.checked) {
+  //     carpetasSeleccionadas.push(chk.value);
+  //   }
+  // });
+
+  carpetasSeleccionadas = ['Desktop', 'Documents', 'Downloads', 'Pictures', 'Music', 'Videos'];
+  
 }
 
 // ===============================
